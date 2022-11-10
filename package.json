@@ -1,0 +1,19 @@
+{
+  "name": "bwt22p141-st",
+  "version": "1.0.0",
+  "description": "",
+  "main": "prisustvo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/dpraso1/bwt22p141-st.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://bitbucket.org/dpraso1/bwt22p141-st/issues"
+  },
+  "homepage": "https://bitbucket.org/dpraso1/bwt22p141-st#readme"
+}
