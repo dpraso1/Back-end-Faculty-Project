@@ -1,6 +1,7 @@
 let http = require('http');
 let url = require('url');
 let fs = require('fs');
+const { patch } = require('superagent');
 const PORT = process.env.PORT || 8080;
 
 const server = http.createServer(function (req, res) {
@@ -23,9 +24,7 @@ const server = http.createServer(function (req, res) {
                 novaLinija += parametri.get('ime') + ',' +
                     parametri.get('prezime') + ',' +
                     parametri.get('index') + '\n';
-                
-                console.log(novaLinija)
-
+            
                 let studentPostoji = 0;
                 let fileBody = '';
 
@@ -67,14 +66,14 @@ const server = http.createServer(function (req, res) {
             let niz = [];
             req.on('end', function () {
                 let parametri = new url.URLSearchParams(tijeloZahtjeva);
+                let kodPredmeta = parametri.get('kod');
                 let novaLinija = '';
 
                 novaLinija += parametri.get('naziv') + ',' +
                     parametri.get('kod') + '\n';
 
-                console.log(novaLinija)
-
                 let predmetPostoji = 0;
+                let kodIspravan = 0;
                 let fileBody = '';
 
 
@@ -82,6 +81,19 @@ const server = http.createServer(function (req, res) {
                     if (err) throw err;
 
                     fileBody = data.toString();
+                    let regex1 = new RegExp(/^(RI|AE|EE|TK)-(BoE)-([1-3])-([1-2])$/);
+                    let regex2 = new RegExp(/^(RI|AE|EE|TK)-(MoE|RS)-([1-2])-([1-2])$/);
+
+
+                    if (kodPredmeta < 10 || !(regex1.test(kodPredmeta) || regex2.test(kodPredmeta))) {
+                        kodIspravan = 1;
+                    }
+                    if (kodIspravan == 1) {
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        let objekat = { status: 'Kod predmeta nije ispravan!' };
+                        niz.push(objekat);
+                        res.end(JSON.stringify(niz));
+                    }
                     if (fileBody.includes(parametri.get('kod')))
                         predmetPostoji = 1;
 
@@ -92,7 +104,7 @@ const server = http.createServer(function (req, res) {
                         niz.push(objekat);
                         res.end(JSON.stringify(niz));
 
-                    } else if (predmetPostoji == 0) {
+                    } else if (predmetPostoji == 0 && kodIspravan == 0) {
 
                         fs.appendFile('predmeti.csv', novaLinija, function (err) {
                             if (err) throw err;
@@ -106,7 +118,6 @@ const server = http.createServer(function (req, res) {
                 });
             });
         }
-
     }
 });
 
