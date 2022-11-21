@@ -60,6 +60,8 @@ describe('POST /student testovi: \n', function () {
                 should.not.exist(err);
             });
     });
+
+    
 });
 
     describe('POST /predmet testovi: \n', function () {
@@ -139,15 +141,14 @@ describe('POST /student testovi: \n', function () {
             }
             chai.request(server)
                 .post('/predmet')
-                .set('content-type', 'application/x-www-form-urlencoded')
+                .set('content-type', 'application/json')
                 .send(predmet)
                 .end(function (err, res) {
                     res.body.should.be.a('array');
                     res.body.length.should.be.eql(1);
                     res.should.have.status(200);
                     should.not.exist(err);
-                });
+                })
         });
-    
     
 });
