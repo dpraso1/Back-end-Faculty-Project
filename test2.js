@@ -7,11 +7,23 @@ let should = chai.should();
 
 describe('POST /student testovi: \n', function () {
 
-    it('POST /student - Student je uspješno kreiran', function () {
+   beforeEach(function (done) {
+        fs = require('fs');
+        fs.writeFile('./studenti.csv', 'Adem,Ademović,518-ST', function () { });
+        done();
+   });
+    
+    before(function (done) {
+        fs = require('fs');
+        fs.writeFile('./studenti.csv', 'Dajana,Prašo,141-ST', function(){});
+           done();
+    });
+    
+    it('POST /student - Student je uspješno kreiran', function (done) {
         let student = {
-            ime: 'Dajana',
-            prezime: 'Prašo',
-            index: '141-ST'
+            ime: 'Pero',
+            prezime: 'Perić',
+            index: '142-ST'
         }
         chai.request(server)
             .post('/student')
@@ -22,14 +34,15 @@ describe('POST /student testovi: \n', function () {
                 res.body.length.should.be.eql(1);
                 res.should.have.status(200);
                 should.not.exist(err);
+                done();
             });
     });
 
-    it('POST /student - Student je uspješno kreiran', function () {
+    it('POST /student - Student je uspješno kreiran', function (done) {
         let student = {
             ime: 'Neko',
             prezime: 'Nekić',
-            index: '27183'
+            index: '515-ST'
         }
         chai.request(server)
             .post('/student')
@@ -40,10 +53,12 @@ describe('POST /student testovi: \n', function () {
                 res.body.length.should.be.eql(1);
                 res.should.have.status(200);
                 should.not.exist(err);
+                done();
+                
             });
     });
 
-    it('POST /student - Index studenta već postoji u datoteci studenti.csv', function () {
+    it('POST /student - Index studenta već postoji u datoteci studenti.csv', function (done) {
         let student = {
             ime: 'Meho',
             prezime: 'Mehić',
@@ -58,15 +73,29 @@ describe('POST /student testovi: \n', function () {
                 res.body.length.should.be.eql(1);
                 res.should.have.status(200);
                 should.not.exist(err);
+                done();
             });
     });
 
     
 });
 
-    describe('POST /predmet testovi: \n', function () {
+describe('POST /predmet testovi: \n', function () {
+
+      before(function (done) {
+        fs = require('fs');
+        fs.writeFile('./predmeti.csv', 'Predmet2,TK-MoE-3-1', function () { });
+        done();
+    });
+
         
-        it('POST /predmet - Predmet je uspješno kreiran', function () {
+    before(function (done) {
+        fs = require('fs');
+        fs.writeFile('./predmeti.csv', 'Predmet,RI-RS-1-2', function () { });
+        done();
+    });
+       
+        it('POST /predmet - Predmet je uspješno kreiran', function (done) {
             let predmet = {
                 naziv: 'P1',
                 kod: 'RI-BoE-1-1'
@@ -80,10 +109,11 @@ describe('POST /student testovi: \n', function () {
                     res.body.length.should.be.eql(1);
                     res.should.have.status(200);
                     should.not.exist(err);
+                    done();
                 });
         });
 
-        it('POST /predmet - Predmet je uspješno kreiran', function () {
+        it('POST /predmet - Predmet je uspješno kreiran', function (done) {
             let predmet = {
                 naziv: 'P2',
                 kod: 'AE-RS-1-2'
@@ -97,10 +127,12 @@ describe('POST /student testovi: \n', function () {
                     res.body.length.should.be.eql(1);
                     res.should.have.status(200);
                     should.not.exist(err);
+                    done();
                 });
         });
+  
 
-        it('POST /predmet - Predmet nema ispravan kod', function () {
+        it('POST /predmet - Predmet nema ispravan kod', function (done) {
             let predmet = {
                 naziv: 'P3',
                 kod: 'TK-MoE-3-1'
@@ -114,10 +146,12 @@ describe('POST /student testovi: \n', function () {
                     res.body.length.should.be.eql(1);
                     res.should.have.status(200);
                     should.not.exist(err);
+                    done();
                 });
         });
+    
         
-        it('POST /predmet - Predmet nema ispravan kod', function () {
+        it('POST /predmet - Predmet nema ispravan kod', function (done) {
             let predmet = {
                 naziv: 'P8',
                 kod: 'RI-RS-3-1'
@@ -131,10 +165,17 @@ describe('POST /student testovi: \n', function () {
                     res.body.length.should.be.eql(1);
                     res.should.have.status(200);
                     should.not.exist(err);
+                    done();
                 });
         });
-
-        it('POST /predmet - Predmet sa kodom već postoji u datoteci predmeti.csv', function () {
+    
+    before(function (done) {
+        fs = require('fs');
+        fs.writeFile('./predmeti.csv', 'Predmet,RI-BoE-1-1', function () { });
+        done();
+    });
+ 
+        it('POST /predmet - Predmet sa kodom već postoji u datoteci predmeti.csv', function (done) {
             let predmet = {
                 naziv: 'P4',
                 kod: 'RI-BoE-1-1'
@@ -148,6 +189,7 @@ describe('POST /student testovi: \n', function () {
                     res.body.length.should.be.eql(1);
                     res.should.have.status(200);
                     should.not.exist(err);
+                    done();
                 })
         });
     
