@@ -167,7 +167,7 @@ const server = http.createServer(function (req, res) {
                 let sedmicaCas = 0;
                 let kodIspravan = 0;
                 let unosPostoji = 0;
-                let azuriraniStatusPrisustva = '';
+                let azuriranStatusPrisustva = 0;
 
 
                 if (!(regex1.test(tip_casa))) {
@@ -216,37 +216,19 @@ const server = http.createServer(function (req, res) {
 
                 fs.readFile('predmeti.csv', function (err, data) {
                     if (err) throw err;
-                    fileBody = data.toString(("utf-8"));
-                    fileBody = fileBody.split('\n');
-                    let regex1 = new RegExp(/^(RI|AE|EE|TK)-(BoE)-([1-3])-([1-2])$/);
-                    let regex2 = new RegExp(/^(RI|AE|EE|TK)-(MoE|RS)-([1-2])-([1-2])$/);
 
-
-                    if (kod_predmeta < 10 || !(regex1.test(kod_predmeta) || regex2.test(kod_predmeta))) {
-                        kodIspravan = 1;
-
-                    }
-                    if (kodIspravan == 1) {
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
-                        let objekat = { status: 'Kod predmeta nije ispravan!' };
-                        niz.push(objekat);
-                        res.end(JSON.stringify(niz));
-                        //console.log(objekat);
-                    }
-
+                    fileBody = data.toString();
                     if (fileBody.includes(kod_predmeta))
                         predmetPostoji = 1;
 
-                    if (predmetPostoji == 1) {
+                    if (predmetPostoji == 0) {
                         res.writeHead(200, { 'Content-Type': 'application/json' });
                         let objekat = { status: 'Kod predmeta ne postoji' };
                         niz.push(objekat);
                         res.end(JSON.stringify(niz));
-                        //console.log(objekat);
+                        console.log(objekat);
                     }
                 });
-
-
 
                 fs.readFile('studenti.csv', function (err, data) {
                     if (err) throw err;
@@ -254,28 +236,15 @@ const server = http.createServer(function (req, res) {
                     fileBody = data.toString();
 
 
-                    let redoviStudent = data.toString("utf-8").split("\n");
-                    let sadrzaj = [];
+                    if (fileBody.includes(index_studenta))
+                        studentPostoji = 1;
 
-                    redoviStudent.forEach((red) => {
-                        sadrzaj.push(...red.split(","));
-                    });
-
-                    for (let i = 0; i < sadrzaj.length; i++) {
-
-                        if (sadrzaj[i] == index_studenta.toString()) {
-                            studentPostoji = 1
-                            return;
-                        }
-                        else if (studentPostoji = 0) {
-
-                            res.writeHead(200, { 'Content-Type': 'application/json' });
-                            let objekat = { status: 'Student sa indexom {' + index_studenta + '} ne postoji!' };
-                            niz.push(objekat);
-                            res.end(JSON.stringify(niz));
-                            // console.log(objekat);
-                            return niz;
-                        }
+                    if (studentPostoji == 0) {
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        let objekat = { status: 'Student sa indeksom' + index_studenta + 'ne postoji!' };
+                        niz.push(objekat);
+                        res.end(JSON.stringify(niz));
+                        console.log(objekat);
                     }
                 });
 
@@ -283,6 +252,35 @@ const server = http.createServer(function (req, res) {
                     if (err) throw err;
 
                     fileBody = data.toString();
+                    if (fileBody.includes(index_studenta)) {
+                        unosPostoji = 1;
+
+                    }
+                    if (unosPostoji == 1) {
+                        fileBody = fileBody.split('\n');
+
+                        fileBody.forEach(element => {
+                            element = element.split(',');
+                            if (element.includes(index_studenta)) {
+                                stara = element[0] + ',' + element[1] + ',' + element[2] + ',' + element[3] + ',' + element[4] + ',' + element[5];
+                                nova = element[0] + ',' + element[1] + ',' + element[2] + ',' + element[3] + ',' + element[4] + ',' + parametri.get('statusPrisustva');
+                            }
+                        });
+
+                        let searchString = stara;
+                        //match everything from start to end of the string
+                        let re = new RegExp('^.*' + searchString + '.*$', 'gm');
+                        let formatted = data.toString().replace(re, nova);
+
+                        fs.writeFile('prisustva.csv', formatted, 'utf8', function (err) {
+                            if (err) throw err;
+                            res.writeHead(200, { 'Content-Type': 'application/json' });
+                            let object = { status: 'Azurirano prisustvo!' };
+                            niz.push(object);
+                            res.end(JSON.stringify(niz));
+                        });
+                    }
+
 
                     if (regex2.test(status_prisustva)) {
                         statusPrisustvaIspravan = 1;
@@ -295,9 +293,9 @@ const server = http.createServer(function (req, res) {
                         //console.log(objekat);
                     }
 
-                    else if (tipIspravan == 0 && brojCasaIspravan == 1 && sedmicaIspravna == 1 && kodIspravan == 0 && sedmicaCas == 1 && statusPrisustvaIspravan == 1) {
+                    else if (tipIspravan == 0 && brojCasaIspravan == 1 && sedmicaIspravna == 1 && sedmicaCas == 1 && statusPrisustvaIspravan == 1) {
 
-                        if (predmetPostoji == 0 && studentPostoji == 1) {
+                        if (predmetPostoji == 1 && studentPostoji == 1) {
 
                             fs.appendFile('prisustva.csv', novaLinija, function (err) {
 
@@ -323,35 +321,36 @@ const server = http.createServer(function (req, res) {
 
     if (req.method == 'GET') {
 
-        const current_url = new URL('http://prisustvo?kodPredmeta=kodPredmetaValue&indexStudenta=indexValue&sedmica=sedmicaValue');
-        const search_params = current_url.searchParams;
-    
-        let kodPredmetaValue = search_params.get('kodPredmetaValue');
-        let indexValue = search_params.get('indexStudentaValue');
-        let sedmicaValue = search_params.get('sedmicaValue');
-        
+        //console.log(req.url)
+
+        req.url = req.url.replace('?', '?&')
+        const search_params = new URLSearchParams(req.url);
+
+        let kodPredmetaValue = search_params.get('kodPredmeta');
+        let indexValue = search_params.get('indexStudenta');
+        let sedmicaValue = search_params.get('sedmica');
+
 
         let prisustvoPostoji = 0;
-        kodPredmetaValue = 'AE-RS-1-2'
-        indexValue = '27183'
-        sedmicaValue = 3;
         let arr = [];
         let obj = {
             kodPredmeta: kodPredmetaValue,
             indexStudenta: indexValue,
             sedmicaValue: sedmicaValue
         }
-        arr.push(obj)
-
-        console.log(obj.kodPredmeta)
+        arr.push(obj);
         fs.readFile('prisustva.csv', 'utf-8', function (err, data) {
 
             let niz = [];
             let tekst = data.toString();
             let redovi = tekst.split('\n');
-
-
-            console.log(tekst.length)
+            let brojacpr = 0;
+            let brojacod = 0;
+            let brojacnU = 0;
+            var pr = 'prisutan';
+            var od = 'odsutan';
+            var nU = 'nijeUneseno';
+            
             for (let i = 0; i < redovi.length; i++) {
                 let kolone = redovi[i].split(',');
 
@@ -363,32 +362,36 @@ const server = http.createServer(function (req, res) {
                     indexStudenta: kolone[4],
                     statusPrisustva: kolone[5]
                 };
-                console.log(kodPredmetaValue)
+
+                let status = objekat.statusPrisustva;
 
                 if (objekat.kodPredmeta == kodPredmetaValue && objekat.indexStudenta == indexValue && objekat.sedmica == sedmicaValue) {
                     prisustvoPostoji = 1;
+                    if (status == pr) {
+                        brojacpr++;
+                    } else if (status == od) {
+                        brojacod++;
+                    } else if (status == nU) {
+                        brojacnU++;
+                    }
                 }
+            }
 
-                if (prisustvoPostoji == 0) {
-
-                    let objekat = { status: 'Prisustvo ne postoji!' };
-                    niz.push(objekat);
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify(niz));
-
-
-                }
-                else {
-
-                    let objekat = { status: 'Prisustvo postoji!' };
-                    niz.push(objekat);
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify(niz));
-                }
-                
+            if (prisustvoPostoji == 0) {
+                let objekat = { status: 'Prisustvo ne postoji!' };
+                niz.push(objekat);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(niz));
+            }
+            if (prisustvoPostoji == 1) {
+                let objekat = { status: 'prisustvoZaSedmicu: ' + sedmicaValue + ', prisutan: ' + brojacpr + ', odsutan: ' + brojacod + ', nijeUneseno: ' + brojacnU };
+                niz.push(objekat);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(niz));
             }
 
         });
+
 
     }
 });
