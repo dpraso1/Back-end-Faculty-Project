@@ -1,20 +1,22 @@
 {
   "name": "bwt22p141-st",
   "version": "1.0.0",
-  "description": "",
   "main": "test2.js",
   "dependencies": {
-    "chai": "^4.3.4",
     "chai-http": "^4.3.0",
     "d3-request": "^1.0.6",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "superagent": "^8.0.3"
   },
   "devDependencies": {
-    "mocha": "^9.1.3"
+    "chai": "^4.3.7",
+    "mocha": "^9.1.3",
+    "parcel": "^2.8.2"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "deploy": "parcel-bundler build js/app.js --out-dir ../priv/static/js --public-url /js --no-cache",
+    "watch": "parcel-bundler watch js/app.js --out-dir ../priv/static/js --public-url /js"
   },
   "repository": {
     "type": "git",
@@ -25,5 +27,6 @@
   "bugs": {
     "url": "https://bitbucket.org/dpraso1/bwt22p141-st/issues"
   },
-  "homepage": "https://bitbucket.org/dpraso1/bwt22p141-st#readme"
+  "homepage": "https://bitbucket.org/dpraso1/bwt22p141-st#readme",
+  "description": ""
 }

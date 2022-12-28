@@ -54,10 +54,8 @@ describe('POST /student testovi: \n', function () {
                 res.should.have.status(200);
                 should.not.exist(err);
                 done();
-
             });
     });
-
     it('POST /student - Student je uspješno kreiran', function (done) {
         let student = {
             ime: 'St1',
@@ -77,8 +75,6 @@ describe('POST /student testovi: \n', function () {
 
             });
     });
-
-
     it('POST /student - Index studenta već postoji u datoteci studenti.csv', function (done) {
         let student = {
             ime: 'Meho',
@@ -116,10 +112,7 @@ describe('POST /student testovi: \n', function () {
                 done();
             });
     });
-
-
 });
-
 describe('POST /predmet testovi: \n', function () {
 
     before(function (done) {
@@ -170,7 +163,6 @@ describe('POST /predmet testovi: \n', function () {
             });
     });
 
-
     it('POST /predmet - Predmet nema ispravan kod', function (done) {
         let predmet = {
             naziv: 'P3',
@@ -188,7 +180,6 @@ describe('POST /predmet testovi: \n', function () {
                 done();
             });
     });
-
 
     it('POST /predmet - Predmet nema ispravan kod', function (done) {
         let predmet = {

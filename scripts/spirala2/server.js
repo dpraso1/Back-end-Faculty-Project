@@ -20,24 +20,18 @@ const server = http.createServer(function (req, res) {
                 let parametri = new url.URLSearchParams(tijeloZahtjeva);
                 let brojIndexa = parametri.get('index');
                 let novaLinija = '';
-
                 novaLinija += '\n' + parametri.get('ime') + ',' +
                     parametri.get('prezime') + ',' +
                     parametri.get('index');
-
-                let studentPostoji = 0;
-                let fileBody = '';
 
                 fs.readFile('studenti.csv', function (err, data) {
                     if (err) throw err;
 
                     let redoviStudent = data.toString("utf-8").split("\n");
                     let sadrzaj = [];
-
                     redoviStudent.forEach((red) => {
                         sadrzaj.push(...red.split(","));
                     });
-
                     for (let i = 0; i < sadrzaj.length; i++) {
                         if (sadrzaj[i] == brojIndexa.toString()) {
                             res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -46,7 +40,6 @@ const server = http.createServer(function (req, res) {
                             res.end(JSON.stringify(niz));
                             // console.log(objekat);
                             return;
-
                         }
                     }
                     fs.appendFile('studenti.csv', novaLinija, function (err) {
@@ -79,10 +72,8 @@ const server = http.createServer(function (req, res) {
                 novaLinija += '\n' + parametri.get('naziv') + ',' +
                     parametri.get('kod');
 
-                let predmetPostoji = 0;
                 let kodIspravan = 0;
                 let fileBody = '';
-
 
                 fs.readFile('predmeti.csv', function (err, data) {
                     if (err) throw err;
@@ -92,7 +83,6 @@ const server = http.createServer(function (req, res) {
                     let regex1 = new RegExp(/^(RI|AE|EE|TK)-(BoE)-([1-3])-([1-2])$/);
                     let regex2 = new RegExp(/^(RI|AE|EE|TK)-(MoE|RS)-([1-2])-([1-2])$/);
                     let kod = parametri.get('kod');
-
 
                     if (kodPredmeta < 10 || !(regex1.test(kodPredmeta) || regex2.test(kodPredmeta))) {
                         kodIspravan = 1;
@@ -107,11 +97,9 @@ const server = http.createServer(function (req, res) {
                     }
                     let redoviPredmet = data.toString("utf-8").split("\n");
                     let sadrzaj = [];
-
                     redoviPredmet.forEach((red) => {
                         sadrzaj.push(...red.split(","));
                     });
-
                     for (let i = 0; i < sadrzaj.length; i++) {
                         if (sadrzaj[i] == kod.toString()) {
 
@@ -121,7 +109,6 @@ const server = http.createServer(function (req, res) {
                             res.end(JSON.stringify(niz));
                             // console.log(objekat);
                             return;
-
                         }
                     }    
                         fs.appendFile('predmeti.csv', novaLinija, function (err) {
@@ -261,7 +248,8 @@ const server = http.createServer(function (req, res) {
                     if (err) throw err;
 
                     fileBody = data.toString();
-                    if (fileBody.includes(tip_casa) && fileBody.includes(redni_broj_casa) && fileBody.includes(sedmica) && fileBody.includes(kod_predmeta) && fileBody.includes(index_studenta) && fileBody.includes(status_prisustva)) {
+                    if (fileBody.includes(tip_casa) && fileBody.includes(redni_broj_casa) && fileBody.includes(sedmica)
+                        && fileBody.includes(kod_predmeta) && fileBody.includes(index_studenta) && fileBody.includes(status_prisustva)) {
                         unosPostoji = 1;
 
                     }
@@ -411,7 +399,6 @@ const server = http.createServer(function (req, res) {
 
     }
 });
-
 
 
 server.listen(PORT, console.log(`Server started on port ${PORT}`));

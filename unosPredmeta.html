@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html lang="bs">
+
+<head>
+    <title>Unos predmeta</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="unosPredmeta.css">
+</head>
+
+<body>
+
+    <form class="form-horizontal" action="/" method="POST" id="predmet-forma">
+
+        <fieldset>
+
+            <legend>Unos predmeta</legend>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="naziv">Naziv predmeta:</label>
+                <div class="col-md-4">
+                    <input id="naziv" name="naziv" type="text" placeholder="Unesite naziv"
+                        class="form-control input-md">
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="kod">Kod predmeta:</label>
+                <div class="col-md-4">
+                    <input id="kod" name="kod" type="text" placeholder="Unesite kod"
+                        class="form-control input-md">
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="submit"></label>
+                <div class="col-md-4">
+                    <button type="submit" id="submit" name="submit">Dodaj predmet</button>
+                </div>
+            </div>
+
+            <p id="odgovor">Poruka</p>
+
+        </fieldset>
+        
+    </form>
+
+    <script type="text/javascript">
+
+        const forma = document.getElementById("predmet-forma");
+        let odgovor = document.getElementById("odgovor");
+
+        forma.addEventListener("submit", function (event) {
+
+            event.preventDefault();
+
+            const naziv = document.getElementById("naziv").value;
+            const kod = document.getElementById("kod").value;
+
+            const predmetObjekat =
+            {
+                naziv,
+                kod
+            };
+
+
+            AjaxPozivi.posaljiPredmet(predmetObjekat, function (err, data) {
+
+                const errPoruka = `Kod predmeta nije ispravan ili predmet sa kodom ${predmetObjekat.kod} već postoji, molimo pokušajte ponovo!`;
+                const poruka = "Kreirano prisustvo!";
+
+                if (err) {
+
+                    err = errPoruka;
+                    odgovor.innerHTML = errPoruka;
+                    odgovor.style.color = "red";
+                    data = null;
+
+                } else if (data) {
+
+                    data = poruka;
+                    odgovor.innerHTML = poruka;
+                    odgovor.style.color = "#04AA6D";
+
+                }
+
+            });
+
+            //provjera posaljiStudent(studentObjekat,callback)
+
+            const studentObjekat = {
+                ime: "Dajana",
+                prezime: "Prašo",
+                index: "435-ST",
+            };
+
+            AjaxPozivi.posaljiStudent(studentObjekat, function (error, data) {
+                if (error) {
+                    console.log("greška");
+                } else {
+                    console.log(data);
+                }
+            });
+
+        });
+
+
+    </script>
+
+    <script src="AjaxPozivi.js"></script>
+    <script src="serverIspravka.js"></script>
+
+</body>
+
+</html>

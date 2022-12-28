@@ -122,9 +122,9 @@ let proba = new Prisustvo();
 console.log(Prisustvo.trenutnaSedmica);
 Prisustvo.trenutnaSedmica = 7;
 console.log(Prisustvo.trenutnaSedmica);
-const lp1 = [{ prSedmica: 2, prisutan: 5, odsutan: 2, nijeUneseno: 1 },
-{ prSedmica: 4, prisutan: -2, odsutan: -2, nijeUneseno: -1 },
-{ prSedmica: 1, prisutan: -1, odsutan: -1, nijeUneseno: 1 }];
-console.log(proba.izracunajPrisustvo(2, lp1));
+const lp1 = [{ prSedmica: 2, prisutan: 4, odsutan: 2, nijeUneseno: 0 },
+    { prSedmica: 1, prisutan: 2, odsutan: 1, nijeUneseno: 1 },
+    { prSedmica: 3, prisutan: 1, odsutan: 2, nijeUneseno: 1 }];
+console.log(proba.izracunajPrisustvo(5, lp1));
 console.log(proba.prisustvo);
 console.log(proba.finalnoStanje);
