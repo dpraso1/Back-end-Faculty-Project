@@ -20,8 +20,7 @@
                 <label class="col-md-4 control-label" for="naziv">Naziv predmeta:</label>
                 <div class="col-md-4">
                     <input id="naziv" name="naziv" type="text" placeholder="Unesite naziv"
-                        class="form-control input-md">
-
+                        class="form-control input-md" required>
                 </div>
             </div>
 
@@ -29,8 +28,7 @@
                 <label class="col-md-4 control-label" for="kod">Kod predmeta:</label>
                 <div class="col-md-4">
                     <input id="kod" name="kod" type="text" placeholder="Unesite kod"
-                        class="form-control input-md">
-
+                        class="form-control input-md" required>
                 </div>
             </div>
 
@@ -85,7 +83,6 @@
                     odgovor.style.color = "#04AA6D";
 
                 }
-
             });
 
             //provjera posaljiStudent(studentObjekat,callback)
@@ -103,9 +100,8 @@
                     console.log(data);
                 }
             });
-
+            
         });
-
 
     </script>
 

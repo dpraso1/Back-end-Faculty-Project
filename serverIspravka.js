@@ -21,15 +21,19 @@ server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 
 server.use(express.static(__dirname));
-server.use(function (req, res, next) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "*");
-    res.setHeader("Access-Control-Allow-Headers", "*");
+server.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', '*');
     next();
 });
 
 server.get("/", function (req, res) {
     res.sendFile(__dirname + "/unosPredmeta.html");
+});
+
+server.get('/', function (req, res) {
+    res.set('Content-Type', 'text/html');
+    res.sendFile(__dirname + '/prisustvo.html');
 });
 
 const PORT = process.env.PORT || 8080;
@@ -145,7 +149,8 @@ server.get("/prisustvo", function (req, res) {
     }
     arr.push(obj);
     fs.readFile("prisustva.csv", "utf-8", function (err, data) {
-
+        if (err) throw err;
+        
         let niz = [];
         let tekst = data.toString();
         let redovi = tekst.split("\n");
@@ -181,15 +186,18 @@ server.get("/prisustvo", function (req, res) {
                 }
             }
         }
+        
 
         if (prisustvoPostoji == 0) {
-            res.json({ status: "Prisustvo ne postoji!" }) ;
-            res.end();
+            if (err) throw err;
+            res.writeHead(400, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ status: "Prisustvo ne postoji!" }));
             return;
         }
         if (prisustvoPostoji == 1) {
-            res.json({ status: "prisustvoZaSedmicu: " + sedmicaValue + ", prisutan: " + brojacpr + ", odsutan: " + brojacod + ", nijeUneseno: " + brojacnU });
-            res.end();
+            if (err) throw err;
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({status: "prisustvoZaSedmicu: " + sedmicaValue + ", prisutan: " + brojacpr + ", odsutan: " + brojacod + ", nijeUneseno: " + brojacnU }));
             return;
         }
         

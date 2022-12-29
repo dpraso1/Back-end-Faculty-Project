@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html lang="bs">
+
+<head>
+    <title>Prisustvo</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="prisustvo.css">
+</head>
+
+<body>
+
+    <form class="form-horizontal" action="/" method="GET" id="prisustvo-forma">
+
+        <fieldset>
+
+            <legend>Prisustvo</legend>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="kodPredmeta">Kod predmeta:</label>
+                <div class="col-md-4">
+                    <input id="kodPredmeta" name="kodPredmeta" type="text" placeholder="Unesite kod predmeta"
+                        class="form-control input-md" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="indexStudenta">Index Studenta:</label>
+                <div class="col-md-4">
+                    <input id="indexStudenta" name="indexStudenta" type="text" placeholder="Unesite index studenta"
+                        class="form-control input-md" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="sedmica">Sedmica:</label>
+                <div class="col-md-4">
+                    <input id="sedmica" name="sedmica" type="text" placeholder="Unesite sedmicu"
+                        class="form-control input-md" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="submit"></label>
+                <div class="col-md-4">
+                    <button type="submit" id="submit" name="submit">Daj prisustvo</button>
+                </div>
+                <p id="odgovor">Poruka ili tabela</p>
+                <div id="prisustvo-tabela"></div>
+        </fieldset>
+
+    </form>
+
+    <script type="text/javascript">
+
+        const forma = document.getElementById("prisustvo-forma");
+        let odgovor = document.getElementById("odgovor");
+        let tabela = document.getElementById("prisustvo-tabela");
+
+
+        forma.addEventListener("submit", function (event) {
+            event.preventDefault();
+  
+            const kodPredmeta = document.getElementById("kodPredmeta").value;
+            const indexStudenta = document.getElementById("indexStudenta").value;
+            const sedmica = document.getElementById("sedmica").value;
+
+            AjaxPozivi.dajPrisustvo(kodPredmeta, indexStudenta, sedmica, function (err, data) {
+
+                const errPoruka = `Prisustvo za predmet sa kodom ${kodPredmeta}, indeksom studenta ${indexStudenta} i sedmicom ${sedmica} ne postoji, molimo pokušajte ponovo!`;
+                const poruka = "Prisustvo postoji! Vrijednosti su ispisane u tabeli ispod.";
+
+
+                if (err) {
+
+                    err = errPoruka;
+                    odgovor.innerHTML = errPoruka;
+                    odgovor.style.color = "red";
+                    data = null;
+                    tabela.innerHTML = "";
+
+                } else {
+
+                    odgovor.innerHTML = poruka;
+                    odgovor.style.color = "#04AA6D";
+
+                    var response = data;
+                    
+                    var prisustvoZaSedmicu = response.prisustvoZaSedmicu;
+                    var prisutan = response.prisutan;
+                    var odsutan = response.odsutan;
+                    var nijeUneseno = response.nijeUneseno;
+
+
+                    var tabelaPrisustvo = "<table><tr><td>prisustvoZaSedmicu</td><td>" + prisustvoZaSedmicu + "</td></tr>" +
+                        "<tr><td>prisutan</td><td>" + prisutan + "</td></tr>" +
+                        "<tr><td>odsutan</td><td>" + odsutan + "</td></tr>" +
+                        "<tr><td>nijeUneseno</td><td>" + nijeUneseno + "</td></tr></table>";
+
+                    tabela.innerHTML = tabelaPrisustvo;
+
+                }
+            });
+        });
+
+    </script>
+
+    <script src="AjaxPozivi.js"></script>
+    <script src="serverIspravka.js"></script>
+
+</body>
+
+</html>

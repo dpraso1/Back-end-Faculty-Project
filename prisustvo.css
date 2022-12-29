@@ -1,0 +1,119 @@
+html {
+    box-sizing: border-box;
+    height: 100%;
+    background-color: #eef8f4;
+}
+
+body {
+    font-size: 17px;
+    font-family: 'Source Sans Pro', sans-serif;
+    color: gray;
+    text-align: center;
+}
+
+fieldset {
+    border-radius: 8px;
+    border: 3px solid #04AA6D;
+    color: #04AA6D;
+    background-color: #e3fbf2;
+    box-shadow: 3px 3px #282A35;
+}
+
+form {
+    width: 50%;
+    display: inline-block;
+}
+
+input[type=text],
+select,
+textarea {
+    text-align: center;
+    width: 50%;
+    padding: 10px;
+    border: 2px solid #04AA6D;
+    border-radius: 8px;
+    resize: vertical;
+    font-weight: normal;
+    box-shadow: 3px 3px #282A35;
+}
+
+input[type=text] {
+    font-size: 15px;
+    background-color: #eef8f4;
+    box-shadow: 3px 3px #3a3c4a;
+    border: 2px solid #04AA6D;
+}
+
+input::placeholder {
+    color: #04AA6D;
+}
+
+input:hover {
+    font-size: 17px;
+    background-color: #eef8f4;
+    box-shadow: 4px 4px #282A35;
+    border: 3px solid #04AA6D;
+}
+
+p {
+    padding: 30px;
+    font-size: 17px;
+    color: #e3fbf2;
+    font-weight: bold;
+}
+
+legend {
+    font-weight: bold;
+    font-size: 25px;
+    color: #03915d;
+    text-shadow: 2px 1px #3a3c4a;
+}
+
+label {
+    font-weight: bold;
+    padding: 40px 10px 10px 0;
+    display: inline-block;
+    text-shadow: 1px 1px #282A35;
+}
+
+#submit {
+    background-color: #04AA6D;
+    color: white;
+    border: 2px double #04AA6D;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: bold;
+    padding: 9px 18px;
+    box-shadow: 3px 3px #3a3c4a;
+    text-shadow: 1px 1px #282A35;
+}
+
+#submit:hover {
+    font-size: 17px;
+    border: 3px double #03915d;
+    box-shadow: 4px 4px #282A35;
+    text-shadow: 2px 2px #282A35;
+}
+
+table {
+    padding: 20px 10px 10px 0;
+    width: 100%;
+    border-collapse: collapse;
+    margin: auto;
+    table-layout: fixed;
+    color: #04AA6D;
+}
+
+td,
+th {
+    border: 1px solid #04AA6D;
+    text-align: left;
+    padding: 8px;
+
+}
+
+td {
+    width: 25%;
+}
