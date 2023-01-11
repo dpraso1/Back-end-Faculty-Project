@@ -36,6 +36,25 @@ const AjaxPozivi = {
         ajax.send(JSON.stringify(predmetObjekat));
     },
 
+    posaljiPrisustvo: function (prisustvoObjekat, callback) {
+
+        var ajax = new XMLHttpRequest();
+
+        ajax.onreadystatechange = function () {
+            if (ajax.readyState === XMLHttpRequest.DONE && ajax.status === 200) {
+                callback(null, ajax.responseText);
+            }
+            else if (ajax.readyState === XMLHttpRequest.DONE && ajax.status === 400) {
+                callback(new Error(), null);
+            }
+        };
+
+        ajax.open("POST", "http://localhost:8080/prisustvo", true);
+        ajax.setRequestHeader("Content-Type", "application/json");
+        ajax.send(JSON.stringify(prisustvoObjekat));
+    },
+
+
     dajPrisustvo: function (kodPredmeta, indexStudenta, sedmica, callback) {
 
         var ajax = new XMLHttpRequest();

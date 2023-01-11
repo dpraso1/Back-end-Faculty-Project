@@ -67,7 +67,7 @@
             AjaxPozivi.posaljiPredmet(predmetObjekat, function (err, data) {
 
                 const errPoruka = `Kod predmeta nije ispravan ili predmet sa kodom ${predmetObjekat.kod} već postoji, molimo pokušajte ponovo!`;
-                const poruka = "Kreirano prisustvo!";
+                const poruka = "Kreiran predmet!";
 
                 if (err) {
 
@@ -95,13 +95,65 @@
 
             AjaxPozivi.posaljiStudent(studentObjekat, function (error, data) {
                 if (error) {
-                    console.log("greška");
+                    console.log("greška1");
+                } else {
+                    console.log(data);
+                }
+            });
+
+            const studentObjekat2 = {
+                ime: "Neko",
+                prezime: "Nekić",
+                index: "4323-ST",
+            };
+
+            AjaxPozivi.posaljiStudent(studentObjekat2, function (error, data) {
+                if (error) {
+                    console.log("greška11");
+                } else {
+                    console.log(data);
+                }
+            });
+
+             //provjera posaljiPrisustvo(prisustvoObjekat,callback)
+
+            const prisustvoObjekat = {
+                tipCasa: "Vjezba",
+                redniBrojCasa: "2",
+                sedmica: "2",
+                kodPredmeta: "RI-BoE-1-1",
+                indexStudenta: "58-ST",
+                statusPrisustva: "odsutan"
+            };
+
+            AjaxPozivi.posaljiPrisustvo(prisustvoObjekat, function (error, data) {
+                if (error) {
+                    console.log("greška2");
+                } else {
+                    console.log(data);
+                }
+            });
+
+            const prisustvoObjekat3 = {
+                tipCasa: "Tutorijal",
+                redniBrojCasa: "2",
+                sedmica: "2",
+                kodPredmeta: "RI-BoE-5-1",
+                indexStudenta: "58-ST",
+                statusPrisustva: "nijeno"
+            };
+
+            AjaxPozivi.posaljiPrisustvo(prisustvoObjekat3, function (error, data) {
+                if (error) {
+                    console.log("greška4");
                 } else {
                     console.log(data);
                 }
             });
             
         });
+
+        
 
     </script>
 
