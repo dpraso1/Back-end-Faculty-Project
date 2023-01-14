@@ -26,6 +26,9 @@ server.post("/student", kontroler.kreirajStudenta);
 //predmet
 server.post("/predmet", kontroler.kreirajPredmet);
 
+//prisustvo
+server.post("/prisustvo", kontroler.kreirajPrisustvo);
+
 
 const PORT = process.env.PORT || 3000;
 
