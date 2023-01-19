@@ -1,8 +1,7 @@
-const Sequelize = require("sequelize");
-const sequelize = require("./konekcija.js");
+"use strict";
 
-module.exports = function (sequelize, DataTypes) {
-    const Student = sequelize.define("Student", {
+module.exports = function (sequelize, Sequelize)  {
+    const Student = sequelize.define("student", {
         id: {
             type: Sequelize.INTEGER,
             allowNull: false,

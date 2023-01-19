@@ -2,32 +2,24 @@ var bodyParser = require("body-parser");
 var express = require("express");
 var server = express();
 server.use(express.static("../public/"));
-
 const kontroler = require("./controllers/kontroler.js");
-const sequelize = require("./models/konekcija.js");
-const { Sequelize } = require("sequelize");
 
-const Student = require("./models/studenti.js")(sequelize, Sequelize);
-const Predmet = require("./models/predmeti.js")(sequelize, Sequelize);
-const Cas = require("./models/casovi.js")(sequelize, Sequelize);
-const Prisustvo = require("./models/prisustvo.js")(sequelize, Sequelize);
-Student.sync();
-Predmet.sync();
-Cas.sync();
-Prisustvo.sync();
 
 server.use(express.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 
-//student
+//http://localhost:3000/student
 server.post("/student", kontroler.kreirajStudenta);
 
-//predmet
+//http://localhost:3000/predmet
 server.post("/predmet", kontroler.kreirajPredmet);
 
-//prisustvo
+//http://localhost:3000/prisustvo
 server.post("/prisustvo", kontroler.kreirajPrisustvo);
+
+//http://localhost:3000/prisustvo?kodPredmeta=kodPredmetaValue&indexStudenta=indexStudentaValue&sedmica=sedmicaValue
+server.get("/prisustvo", kontroler.dajPrisustvo);
 
 
 const PORT = process.env.PORT || 3000;

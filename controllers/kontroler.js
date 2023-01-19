@@ -1,17 +1,14 @@
 "use strict";
-const sequelize = require("../models/konekcija.js");
+
 const { Sequelize } = require("sequelize");
-const db = require("../models/konekcija.js");
+const { sequelize, Student, Predmet, Cas, Prisustvo, studentPredmet } = require("../models/konekcija.js");
 
-const Student = require("../models/studenti.js")(sequelize, Sequelize);
-const Predmet = require("../models/predmeti.js")(sequelize, Sequelize);
-const Cas = require("../models/casovi.js")(sequelize, Sequelize);
-const Prisustvo = require("../models/prisustvo.js")(sequelize, Sequelize);
-Student.sync();
-Predmet.sync();
-Cas.sync();
-Prisustvo.sync();
+console.log(Student.associations);
+console.log(Predmet.associations);
+console.log(Cas.associations);
+console.log(Prisustvo.associations);
 
+//http://localhost:3000/student
 exports.kreirajStudenta = function (req, res) {
 
     let student = req.body;
@@ -47,6 +44,7 @@ exports.kreirajStudenta = function (req, res) {
         });
 };
 
+//http://localhost:3000/predmet
 exports.kreirajPredmet = function (req, res) {
 
     let predmet = req.body;
@@ -90,7 +88,7 @@ exports.kreirajPredmet = function (req, res) {
         });
 };
 
-
+//http://localhost:3000/prisustvo
 exports.kreirajPrisustvo = function (req, res) {
 
 
@@ -151,7 +149,7 @@ exports.kreirajPrisustvo = function (req, res) {
 
                             } else {
                                 Prisustvo.update({ status: req.body.statusPrisustva }, {
-                                    
+
                                     where: {
                                         casId: casPostoji.id,
                                         studentId: student.id
@@ -213,4 +211,83 @@ exports.kreirajPrisustvo = function (req, res) {
         .catch(err => {
             res.status(400).json({ status: "Desila se greška prilikom obrade zahtjeva, molimo provjerite ispravnost unesenih podataka!" });
         })
+};
+
+//http://localhost:3000/prisustvo?kodPredmeta=kodPredmetaValue&indexStudenta=indexStudentaValue&sedmica=sedmicaValue
+exports.dajPrisustvo = function (req, res) {
+
+    const { kodPredmeta, indexStudenta, sedmica } = req.query;
+
+    Predmet.findOne({ where: { kod: kodPredmeta } })
+        .then(predmet => {
+            if (!predmet) {
+                return res.status(400).json({ status: "Prisustvo ne postoji!" });
+            }
+            Cas.findOne({ where: { sedmica: sedmica } })
+                .then(cas => {
+                    if (!cas) {
+                        return res.status(400).json({ status: "Prisustvo ne postoji!" });
+                    }
+
+                    Student.findOne({ where: { index: indexStudenta } })
+                        .then(student => {
+                            if (!student) {
+                                return res.status(400).json({ status: "Prisustvo ne postoji!" });
+                            }
+
+                            Prisustvo.findAll({
+
+                                include: [
+                                    {
+                                        model: Cas, where: { sedmica: sedmica },
+                                        include: [
+                                            {
+                                                model: Predmet, where: { kod: kodPredmeta }
+                                            }]
+                                    },
+                                    { model: Student, where: { index: indexStudenta } }
+                                ]
+
+                            })
+                                .then(prisustvo => {
+                                    if (!prisustvo) {
+                                        return res.status(400).json({ status: "Prisustvo ne postoji!" });
+                                    }
+                                    else {
+
+                                        let prisutan = 0;
+                                        let odsutan = 0;
+                                        let nijeUneseno = 0;
+                                        const statusi = prisustvo.map(p => p.status);
+
+                                        statusi.forEach(status => {
+                                            if (status === "prisutan") {
+                                                prisutan++;
+                                            } else if (status === "odsutan") {
+                                                odsutan++;
+                                            } else if (status === "nijeUneseno") {
+                                                nijeUneseno++;
+                                            }
+                                        });
+                                        if (prisutan == 0 && odsutan == 0 && nijeUneseno == 0) {
+                                            return res.status(400).json({ status: "Prisustvo ne postoji!" });
+                                        } else {
+                                            return res.status(200).json({
+                                                status: "prisustvoZaSedmicu: " + sedmica + ", prisutan: " + prisutan + ", odsutan: " + odsutan + ", nijeUneseno: " + nijeUneseno
+                                            });
+                                        }
+                                    }
+                                }).catch(err => {
+                                    res.status(400).json({ status: "Desila se greška prilikom obrade zahtjeva, molimo provjerite ispravnost unesenih podataka!" });
+                                })
+                        }).catch(err => {
+                            res.status(400).json({ status: "Desila se greška prilikom obrade zahtjeva, molimo provjerite ispravnost unesenih podataka!" });
+                        })
+                }).catch(err => {
+                    res.status(400).json({ status: "Desila se greška prilikom obrade zahtjeva, molimo provjerite ispravnost unesenih podataka!" });
+                })
+        }).catch(err => {
+            res.status(400).json({ status: "Desila se greška prilikom obrade zahtjeva, molimo provjerite ispravnost unesenih podataka!" });
+        })
+
 };

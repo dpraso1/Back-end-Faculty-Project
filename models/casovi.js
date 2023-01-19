@@ -1,8 +1,8 @@
-const Sequelize = require("sequelize");
-const sequelize = require("./konekcija.js");
+"use strict";
 
-module.exports = function (sequelize, DataTypes) {
-    const Cas = sequelize.define("Cas", {
+
+module.exports = function (sequelize, Sequelize) {
+    const Cas = sequelize.define("cas", {
         id: {
             type: Sequelize.INTEGER,
             allowNull: false,
@@ -25,10 +25,13 @@ module.exports = function (sequelize, DataTypes) {
             type: Sequelize.INTEGER,
             foreignKey: true,
             allowNull: false,
+            
             references: {
-                model: "Predmet",
+                model: "predmet",
                 key: "id",
                 as: "predmetId",
+                onDelete: "CASCADE",
+                onUpdate: "CASCADE"
             }
         }
     }, {

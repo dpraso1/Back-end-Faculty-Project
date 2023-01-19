@@ -1,8 +1,7 @@
-const Sequelize = require("sequelize");
-const sequelize = require("./konekcija.js");
+"use strict";
 
-module.exports = function (sequelize, DataTypes) {
-    const Predmet = sequelize.define("Predmet", {
+module.exports = function (sequelize, Sequelize) {
+    const Predmet = sequelize.define("predmet", {
         id: {
             type: Sequelize.INTEGER,
             allowNull: false,

@@ -6,26 +6,30 @@ const sequelize = new Sequelize("spirala4", "root", "", {
     port: 3306
 });
 
-sequelize.authenticate().then(() => {
-    console.log("Connection has been established successfully.");
+
+sequelize.authenticate().then(function () {
+    console.log("Konekcija uspješno uspostavljena!");
 }).catch(err => {
     console.log("error:" + err);
 });
 
+sequelize.sync({ alter: true, force: false }).then(function () {
+    console.log("Gotovo kreiranje tabela!");
+}).catch(err => {
+    console.log("error:" + err)
+});
 
-const db = {};
 
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
-
-const Student = require("./studenti.js")(sequelize, Sequelize);
-const Predmet = require("./predmeti.js")(sequelize, Sequelize);
-const Cas = require("./casovi.js")(sequelize, Sequelize);
-const Prisustvo = require("./prisustvo.js")(sequelize, Sequelize);
+const Student = require("../models/studenti.js")(sequelize, Sequelize);
+const Predmet = require("../models/predmeti.js")(sequelize, Sequelize);
+const Cas = require("../models/casovi.js")(sequelize, Sequelize);
+const Prisustvo = require("../models/prisustvo.js")(sequelize, Sequelize);
+const studentPredmet = require("../models/student_predmet.js")(sequelize, Sequelize);
 Student.sync();
 Predmet.sync();
-Cas.sync();
 Prisustvo.sync();
+Cas.sync();
+studentPredmet.sync();
 
 //Predmet ---< Cas
 Predmet.hasMany(Cas, {
@@ -34,16 +38,6 @@ Predmet.hasMany(Cas, {
 });
 Cas.belongsTo(Predmet, {
     foreignKey: "predmetId",
-    sourceKey: "id"
-});
-
-//Student ---< Prisustvo
-Student.hasMany(Prisustvo, {
-    foreignKey: "studentId",
-    sourceKey: "id"
-});
-Prisustvo.belongsTo(Student, {
-    foreignKey: "studentId",
     sourceKey: "id"
 });
 
@@ -57,20 +51,38 @@ Prisustvo.belongsTo(Cas, {
     sourceKey: "id"
 });
 
+
+//Student ---< Prisustvo
+Student.hasMany(Prisustvo, {
+    foreignKey: "studentId",
+    sourceKey: "id"
+});
+Prisustvo.belongsTo(Student, {
+    foreignKey: "studentId",
+    sourceKey: "id"
+});
+
+
 //međutabela student_predmet (many to many)
 Student.belongsToMany(Predmet, {
     through: "student_predmet",
-    as: "Predmet",
+    as: "predmet",
     foreignKey: "studentId",
     otherKey: "predmetId"
 });
 
 Predmet.belongsToMany(Student, {
     through: "student_predmet",
-    as: "Student",
+    as: "student",
     foreignKey: "predmetId",
     otherKey: "studentId"
 });
 
 
-module.exports = sequelize;
+
+console.log(Student.associations);
+console.log(Predmet.associations);
+console.log(Cas.associations);
+console.log(Prisustvo.associations.ca.target);
+
+module.exports = { sequelize, Student, Predmet, Cas, Prisustvo, studentPredmet }

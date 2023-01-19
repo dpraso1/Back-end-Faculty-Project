@@ -1,18 +1,9 @@
 "use strict";
 
 module.exports = function (sequelize, Sequelize) {
-    const Prisustvo = sequelize.define("prisustvo", {
-        id: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            autoIncrement: true,
-            primaryKey: true
-        },
+    const studentPredmet = sequelize.define("student_predmet", {
         studentId: {
             type: Sequelize.INTEGER,
-            foreignKey: true,
-            allowNull: false,
-            
             references: {
                 model: "student",
                 key: "id",
@@ -21,26 +12,19 @@ module.exports = function (sequelize, Sequelize) {
                 onUpdate: "CASCADE"
             }
         },
-        casId: {
+        predmetId: {
             type: Sequelize.INTEGER,
-            foreignKey: true,
-            allowNull: false,
-            
             references: {
-                model: "cas",
+                model: "predmet",
                 key: "id",
-                as: "casId",
+                as: "predmetId",
                 onDelete: "CASCADE",
                 onUpdate: "CASCADE"
             }
-        },
-        status: {
-            type: Sequelize.STRING,
-            allowNull: false
         }
     }, {
         freezeTableName: true,
         timestamps: false
-});
-    return Prisustvo;
+    });
+    return studentPredmet;
 };
