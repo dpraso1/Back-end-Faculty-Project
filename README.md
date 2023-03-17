@@ -1,11 +1,8 @@
 # Backend-Faculty-Project
 
-**Faculty of Electrical Engineering, University of Sarajevo**
+**Faculty web application (Students, Subjects, Student Attendance, etc.)**
 
-Faculty project within the course of Back-end Web Technologies.
-
-Faculty web application (Students, Subjects, Student Attendance, etc.) 
-
+Faculty project within the course of Back-end Web Technologies, Faculty of Electrical Engineering, University of Sarajevo
 
 ## Contributors
 
