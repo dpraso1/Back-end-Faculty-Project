@@ -10,7 +10,7 @@ In this course we implemented a web application that is supposed to be a simpler
 
 - Dajana Prašo
 
-##Technologies
+## Technologies
 
 - Node.js
 - MySQL
